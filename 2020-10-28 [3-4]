@@ -1,0 +1,194 @@
+#include <iostream>
+using namespace std;
+
+#include <iostream>
+using namespace std;
+
+template<typename T>
+
+class Stack
+{
+public:
+	int capacity = 10;
+	T* array = new T[capacity];
+	int top = -1;
+	Stack()
+	{
+
+	}
+
+	bool eof()
+	{
+		if (top > -1)
+			return false;
+		else
+			return true;
+	}
+	void Push(T insert)
+	{
+		top++;
+		array[top] = insert;
+	}
+
+	T TopElement()
+	{
+		return array[top];
+	}
+
+	T Pop()
+	{
+		return array[top--];
+	}
+	void PrintStack()
+	{
+		for (int i = top; i >= 0; i--)
+		{
+			cout << array[i] << " ";
+		}
+	}
+};
+
+int Priority(char op)
+{
+	int var;
+	switch (op)
+	{
+	case '+':case '-':
+		var = 1;
+		break;
+	case '*':case '/':
+		var = 2;
+		break;
+	default:
+		var = 0;
+		break;
+	}
+	return var;
+}
+
+void InfixToPostfix(char infix[],char outfix[])
+{
+	bool conti = true;
+	Stack<char> stack;
+	int index = 0, outIndex = 0;
+	while (conti)
+	{
+		switch (infix[index])
+		{
+		case '\0':
+			conti = false;
+			break;
+
+		case '(':
+			stack.Push(infix[index]);
+			break;
+		case ')':
+			while (true)
+			{
+				char buff = stack.Pop();
+				if (buff == '(')
+					break;
+				else
+					outfix[outIndex++] =  buff;
+			}
+			break;
+		case '+': case '-':case '*':case '/':
+			if (stack.top == -1 || Priority(stack.TopElement()) < Priority(infix[index]))
+			{
+				stack.Push(infix[index]);
+			}
+			else
+			{
+				while (true)
+				{
+					if (Priority(stack.TopElement()) < Priority(infix[index]))
+					{
+						break;
+					}
+					else
+					{
+						outfix[outIndex++] = stack.Pop();
+					}
+				}
+				stack.Push(infix[index]);
+			}
+			break;
+
+		default:
+			outfix[outIndex++] = infix[index];
+			break;
+		}
+		if (!conti)
+			break;
+		index++;
+
+	}
+	while (!(stack.eof()))
+	{
+		outfix[outIndex++] = stack.Pop();
+	}
+	outfix[outIndex++] = '\0';
+}
+
+
+int Transfer(char postfix[])
+{
+	Stack<char> stack;
+	bool cont = true;
+	int index = 0;
+	int num1, num2, total;
+	char toChar;
+	while (cont)
+	{
+		switch (postfix[index])
+		{
+		case '\0':
+			cont = false;
+			break;
+		case '+':case '-':case '*': case '/':
+			num2 = stack.Pop() - '0';
+			num1 = stack.Pop() - '0';
+			
+			switch (postfix[index])
+			{
+			case '+':
+				total = num1 + num2;
+				break;
+			case '-':
+				total = num1 - num2;
+				break;
+			case '*':
+				total = num1 * num2;
+				break;
+			case '/':
+				total = num1 / num2;
+				break;
+			}
+			toChar = total + '0';
+			stack.Push(toChar);
+			break;
+		default:
+			stack.Push(postfix[index]);
+			break;
+		}
+		index++;
+	}
+	return stack.Pop() - '0';
+}
+
+
+int Eval(char infix[])
+{
+	char buffer[20];
+	InfixToPostfix(infix, buffer);
+	return Transfer(buffer);
+}
+
+int main(int argc, char *argv[])
+{
+	char itemset[20], itemset2[20];
+	cin.getline(itemset, 20);
+	cout << Eval(itemset);
+	
+}
+
