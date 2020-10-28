@@ -1,0 +1,135 @@
+#include <iostream>
+using namespace std;
+
+template<typename T>
+
+class Stack
+{
+public:
+	int capacity = 10;
+	T* array = new T[capacity];
+	int top = -1;
+	Stack()
+	{
+
+	}
+
+	bool eof()
+	{
+		if (top > -1)
+			return false;
+		else
+			return true;
+	}
+	void Push(T insert)
+	{
+		top++;
+		array[top] = insert;
+	}
+
+	T TopElement()
+	{
+		return array[top];
+	}
+
+	T Pop()
+	{
+		return array[top--];
+	}
+	void PrintStack()
+	{
+		for (int i = top; i >= 0; i--)
+		{
+			cout << array[i] << " ";
+		}
+	}
+};
+
+int Priority(char op)
+{
+	int var;
+	switch (op)
+	{
+	case '+':case '-':
+		var = 1;
+		break;
+	case '*':case '/':
+		var = 2;
+		break;
+	default:
+		var = 0;
+		break;
+	}
+	return var;
+}
+
+void InfixToPostfix(char infix[])
+{
+	bool conti = true;
+	Stack<char> stack;
+	int index = 0;
+	while (conti)
+	{
+		switch (infix[index])
+		{
+		case '\0':
+			conti = false;
+			break;
+
+		case '(':
+			stack.Push(infix[index]);
+			break;
+		case ')':
+			while (true)
+			{
+				char buff = stack.Pop();
+				if (buff == '(')
+					break;
+				else
+					cout << buff;
+			}
+			break;
+		case '+': case '-':case '*':case '/':
+			if (stack.top == -1||Priority(stack.TopElement()) < Priority(infix[index]))
+			{
+				stack.Push(infix[index]);
+			}
+			else
+			{
+				while (true)
+				{
+					if (Priority(stack.TopElement()) < Priority(infix[index]))
+					{
+						break;
+					}
+					else
+					{
+						cout << stack.Pop();
+					}
+				}
+				stack.Push(infix[index]);
+			}
+			break;
+
+		default:
+			cout << infix[index];
+			break;
+		}
+		if (!conti)
+			break;
+		index++;
+		
+	}
+	while (!(stack.eof()))
+	{
+		cout << stack.Pop();
+	}
+
+}
+
+int main(int argc, char *argv[])
+{
+	char itemset[20];
+	cin.getline(itemset, 20);
+	InfixToPostfix(itemset);
+}
