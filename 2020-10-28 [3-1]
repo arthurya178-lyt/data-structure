@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+class Stack
+{
+public:
+	int capacity = 10;
+	int* array = new int[capacity];
+	int top = -1;
+	Stack()
+	{
+
+	}
+	void Push(int insert)
+	{
+		top++;
+		array[top] = insert;
+	}
+	int Pop()
+	{
+		return array[top--];
+	}
+	void PrintStack()
+	{
+		for (int i = top; i >=0; i--)
+		{
+			cout << array[i] << " ";
+		}
+	}
+};
+
+int main(int argc, char *argv[])
+{
+	Stack stack;
+	int times, input;
+	cin >> times;
+	for (int i = 0; i < times; i++) {
+		cin >> input;
+		stack.Push(input);
+	}
+	cin >> times;
+	for (int i = 0; i < times; i++) {
+		stack.Pop();
+	}
+	stack.PrintStack();
+}
