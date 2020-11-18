@@ -1,0 +1,82 @@
+#include <iostream>
+using namespace std;
+
+class Queue
+{
+private:
+	int arr[10];
+	int front = 0, rear = -1;
+	void check()
+	{
+		if (front > 9)
+			front = 0;
+		if (rear > 9)
+			rear = 0;
+		if (front < 0)
+			front = 9;
+		if (rear < 0)
+			rear = 9;
+	}
+public:
+	void Enqueue(int x)
+	{
+		rear++;
+		check();
+		arr[rear] = x;
+	}
+	void Dequeue()
+	{
+		front++;
+		check();
+	}
+	void BackEnqueue(int x)
+	{
+		front--;
+		check();
+		arr[front] = x;
+	}
+	void BackDequeue()
+	{
+		rear--;
+		check();
+	}
+	void PrintQueue()
+	{
+		int index = front;
+		while (true)
+		{
+			if (index > 9)
+				index = 0;
+			if (index == (rear+1) % 10)
+				break;
+			cout << arr[index] << " ";
+			index++;
+		}
+		cout << "rear:" << (rear + 1) % 10 << " front:" << (front) % 10;
+	}
+};
+
+int main(int argc, char *argv[])
+{
+	Queue queue;
+	int times, input;
+	cin >> times;
+	for (int j = 0; j < times; j++) {
+		cin >> input;
+		queue.Enqueue(input);
+	}
+	cin >> times;
+	for (int j = 0; j < times; j++) {
+		queue.Dequeue();
+	}
+	cin >> times;
+	for (int j = 0; j < times; j++) {
+		cin >> input;
+		queue.BackEnqueue(input);
+	}
+	cin >> times;
+	for (int j = 0; j < times; j++) {
+		queue.BackDequeue();
+	}
+	queue.PrintQueue();
+}
