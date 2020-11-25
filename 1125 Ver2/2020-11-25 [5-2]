@@ -1,0 +1,92 @@
+#include<iostream>
+using namespace std;
+class LinkedList;
+class ListNode
+{
+public:
+	ListNode(int a)
+	{
+		data = a; link = 0;
+	}
+
+private:
+	int data;
+	ListNode *link;
+	friend class LinkedList;
+};
+
+class LinkedList
+{
+public:
+	ListNode *first = 0, *last = 0;
+	void InsertFirst(int x)
+	{
+		ListNode *newNode = new ListNode(x);
+		newNode->link = first;
+		first = newNode;
+	}
+	void InsertLast(int x)
+	{
+		ListNode *newNode = new ListNode(x);
+		if (first == 0)
+		{
+			first = newNode;
+			return;
+		}
+		ListNode *conti = first;
+		while (conti->link != 0)
+		{
+			conti = conti->link;
+		}
+		conti->link = newNode;
+		newNode->link = 0;
+	}
+	int DeleteFirst()
+	{
+		ListNode *nowF = first;
+		first = nowF->link;
+		return nowF->data;
+	}
+	int DeleteLast()
+	{
+		ListNode *conti = first;
+		while ((conti->link)->link != 0)
+		{
+			conti = conti->link;
+		}
+		int info = (conti->link)->data;
+		conti->link = 0;
+		return info;
+	}
+	void Reverse()
+	{
+		ListNode *conti = first;
+		LinkedList newList;
+		while (conti != 0)
+		{
+			newList.InsertFirst(conti->data);
+			conti = conti->link;
+		}
+		*this = newList;
+	}
+	void PrintList()
+	{
+		ListNode *conti = first;
+		while (conti != 0)
+		{
+			cout << conti->data << " ";
+			conti = conti->link;
+		}
+		cout << endl;
+	}
+};
+
+int main(int argc, char *argv[])
+{
+	LinkedList list;
+	int times, input;
+	for (cin >> times; times > 0; times--) { cin >> input; list.InsertFirst(input); }
+	list.PrintList();
+	list.Reverse();
+	list.PrintList();
+}
