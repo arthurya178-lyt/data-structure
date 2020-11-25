@@ -1,0 +1,129 @@
+#include<iostream>
+using namespace std;
+
+int main() {
+	class LinkedList;
+	class ListNode
+	{
+	public:
+		ListNode(int a) 
+		{ data = a; link = 0; }
+
+	private:
+		int data;
+		ListNode *link;
+		friend class LinkedList;
+	};
+
+	class LinkedList
+	{
+	public:
+		ListNode *first, *last;
+		LinkedList()
+		{
+			first = 0;
+			last = 0;
+		}
+		void InsertFirst(int x)
+		{
+			ListNode *newNode = new ListNode(x);   
+			newNode->link = first;                 
+			first = newNode;                       
+		}
+		int DeleteFirst()
+		{
+			ListNode *newNode = first;
+			first = newNode->link;
+			return newNode->data;
+		}
+		void InsertLast(int x)
+		{
+			ListNode *newNode = new ListNode(x);  
+
+			if (first == 0) {                     
+				first = newNode;
+				return;
+			}
+
+			ListNode *current = first;
+			while (current->link != 0) {          
+				current = current->link;
+			}
+			current->link = newNode;               
+		}
+		int DeleteLast()
+		{
+			ListNode *current = first,*past = 0;				// 用pointer *current在list中移動
+			while (current != 0) {							// Traversal
+				past = current;
+				if ((past->link)->link == 0)
+					break;
+				current = current->link;
+			}
+
+			past->link = 0;
+			return past->data;
+		}
+		void PrintList()
+		{
+			if (first == 0) {                      // 如果first node指向NULL, 表示list沒有資料
+				cout << "List is empty.\n";
+				return;
+			}
+
+			ListNode *current = first;             // 用pointer *current在list中移動
+			while (current != 0) {                 // Traversal
+				cout << current->data << " ";
+				current = current->link;
+			}
+			cout << endl;
+
+		}
+
+		void Reverse()
+		{
+			if (first == 0 || first->link == 0) {
+				return;
+			}
+
+			ListNode *previous = 0,
+				*current = first,
+				*preceding = first->link;
+
+			while (preceding != 0) {
+				current->link = previous;      // 把current->next轉向
+				previous = current;            // previous往後挪
+				current = preceding;           // current往後挪
+				preceding = preceding->link;   // preceding往後挪
+			}                                  // preceding更新成NULL即跳出while loop
+
+			current->link = previous;          // 此時current位於最後一個node, 將current->next轉向
+			first = current;                   // 更新first為current
+		}
+	};
+	class Stack
+	{
+	public:
+		LinkedList list;
+		void Push(int x)
+		{
+			list.InsertLast(x);
+		}
+		int Pop()
+		{
+			return list.DeleteLast();
+		}
+		void PrintStack()
+		{
+			list.PrintList();
+		}
+	};
+	int main();
+	{
+		Stack stack;
+		int times, input;
+		for (cin >> times; times > 0; times--) { cin >> input; stack.Push(input); }
+		for (cin >> times; times > 0; times--) stack.Pop();
+		stack.PrintStack();
+	}
+}
