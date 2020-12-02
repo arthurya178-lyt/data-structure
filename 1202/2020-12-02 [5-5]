@@ -1,0 +1,90 @@
+#include <iostream>
+using namespace std;
+
+class CircularList;
+
+class ListNode
+{
+public:
+	ListNode(int a) { data = a; link = 0; }
+private:
+	int data;
+	ListNode *link;
+	friend class CircularList;
+};
+
+class CircularList
+{
+private:
+	ListNode *last = 0;
+public:
+	void InsertFirst(int x)
+	{
+		ListNode *newNode = new ListNode(x);
+		if (last == 0)
+		{
+			last = newNode;
+			newNode->link = last;
+			return;
+		}
+		{
+			ListNode *buffer;
+			buffer = last->link;
+			last->link = newNode;
+			newNode->link = buffer;
+		}
+	}
+	void InsertLast(int x)
+	{
+		ListNode *newNode = new ListNode(x);
+		{
+			ListNode *buffer;
+			buffer = last->link;
+			last->link = newNode;
+			newNode->link = buffer;
+		}
+		last = newNode;
+	}
+	int DeleteFirst()
+	{
+		int info = last->link->data;
+		last->link = (last->link)->link;
+		return info;
+	}
+	int DeleteLast()
+	{
+		int info = last->data;
+		ListNode *walk = last->link;
+		while (true)
+		{
+			if(walk->link == last)
+				break;
+			walk = walk->link;
+		}
+		walk->link = last->link;
+		last = walk;
+		return info;
+	}
+	void PrintList()
+	{
+		ListNode *walk = last->link;
+		while (true)
+		{
+			cout << walk->data << " ";
+			if (walk == last)
+				break;
+			walk = walk->link;
+		}
+	}
+};
+
+int main(int argc, char *argv[])
+{
+	CircularList list;
+	int times, input;
+	for (cin >> times; times > 0; times--) { cin >> input; list.InsertFirst(input); }
+	for (cin >> times; times > 0; times--) list.DeleteFirst();
+	for (cin >> times; times > 0; times--) { cin >> input; list.InsertLast(input); }
+	for (cin >> times; times > 0; times--) list.DeleteLast();
+	list.PrintList();
+}
