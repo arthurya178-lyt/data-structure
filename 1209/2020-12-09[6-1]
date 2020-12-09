@@ -1,0 +1,82 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+/*
+class Tree
+{
+public:
+	int node;
+	Tree *pre = 0 , *suf = 0;
+	
+};
+*/
+class BinTree
+{
+public:
+	int arr[100];
+	int *tail;
+	int amount = 0,layer;
+	BinTree()
+	{
+		tail = 0;
+		for (int i = 0; i < 100; i++)
+			arr[i] = 0;
+	}
+	
+	void BuildTree(int data[], int n)
+	{
+		amount = n;
+		
+		int elem = 0;
+		while (elem < n)
+		{
+			int walk = 1;
+			while (true)
+			{
+				if (arr[walk] == 0)
+				{
+					arr[walk] = data[elem];
+					break;
+				}
+				else if (data[elem] < arr[walk])
+				{
+					walk = walk * 2;
+				}
+				else if(data[elem] > arr[walk])
+				{
+					walk = walk * 2 + 1;
+				}
+			}
+			elem++;
+		}
+	}
+	void Print()
+	{
+		int lastPlace = 0;
+		for (int i = 0; i < 100; i++)
+		{
+			if (arr[i] != 0)
+				lastPlace = i;
+		}
+		/*
+		for (int i = 0; i < 6; i++)
+		{
+			if (pow(2, i) <= lastPlace && pow(2, i + 1) > lastPlace)
+				layer = i+1;
+		}
+		int limit = pow(2, layer) ;*/
+		for (int i = 1; i < lastPlace+1; i++)
+			cout << arr[i] << " ";
+	}
+};
+
+int main()
+{
+	BinTree tree1;
+	int n;
+	cin >> n;
+	int *data = new int[n];
+	for (int i = 0; i < n; i++) cin >> data[i];
+	tree1.BuildTree(data, n);
+	tree1.Print();
+}
