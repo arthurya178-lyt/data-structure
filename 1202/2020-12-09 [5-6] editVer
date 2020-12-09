@@ -1,0 +1,194 @@
+#include <iostream>
+using namespace std;
+
+class ListNode
+{
+public:
+	ListNode(int a, int b) { coef = a; exp = b; link = 0; }
+private:
+	int coef;
+	int exp;
+	ListNode *link;
+	friend class PolyList;
+};
+
+
+
+class PolyList
+{
+public:
+	ListNode *first = 0, *last = 0;
+	int findSocket(ListNode *otherNode)	//find no exist element in original Polylist
+	{
+		//other node infront of first OR behind of last
+		if (otherNode->exp > first->exp)
+		{
+			return 0;
+		}
+		else if (otherNode->exp < getLastElement()->exp)
+		{
+			return elemAmount();
+		}
+		//Walked otherNode
+		int countDown = 0;
+		ListNode *WalkedNode = first;
+		while (true)
+		{
+			countDown++;
+			if (otherNode->exp < WalkedNode->exp && otherNode->exp > WalkedNode->link->exp)
+			{
+				return countDown;
+			}
+			WalkedNode = WalkedNode->link;
+		}
+	}
+
+	bool addElement(ListNode *otherNode)
+	{
+		ListNode *WalkedNode = first;
+		while (WalkedNode != 0)
+		{
+			if (otherNode->exp == WalkedNode->exp)
+			{
+				WalkedNode->coef += otherNode->coef;
+				return true;
+			}
+			WalkedNode = WalkedNode->link;
+		}
+		return false;
+	}
+
+
+	int elemAmount()	//return totally amount element in polylist
+	{
+		int counter = 0;
+		ListNode *WalkedNode = first;
+		while (true)
+		{
+			counter++;
+			if (WalkedNode->link == 0)
+				break;
+			WalkedNode = WalkedNode->link;
+		}
+		return counter;
+	}
+	ListNode* getLastElement()	//return latest element in polylist
+	{
+		ListNode *WalkedNode = first;
+		while (true)
+		{
+			if (WalkedNode->link == 0)
+				break;
+			WalkedNode = WalkedNode->link;
+		}
+		return WalkedNode;
+	}
+	void InsertNewElement(int Space, ListNode *newNode) //insert new element in Socket
+	{
+		ListNode *WalkedNode = first;
+		if (Space == 0)								//inFR0NT element 1;
+		{
+			InsertFirst(newNode);
+		}
+		else if (Space == this->elemAmount())	//before element last
+		{
+			InsertLast(newNode);
+		}
+		else								//other Element
+		{
+			int counter = 0;
+			while (true)
+			{
+				counter++;
+				if (counter == Space)
+					break;
+				WalkedNode = WalkedNode->link;
+			}
+			newNode->link = WalkedNode->link;
+			WalkedNode->link = newNode;
+		}
+	}
+	void InsertFirst(int x, int y)
+	{
+		ListNode *newNode = new ListNode(x, y);
+		newNode->link = first;
+		first = newNode;
+	}
+	void InsertLast(int x, int y)
+	{
+		ListNode *newNode = new ListNode(x, y);
+		ListNode *conti = first;
+		if (first == 0)
+		{
+			first = newNode;
+			return;
+		}
+		while (conti->link != 0)
+		{
+			conti = conti->link;
+		}
+		conti->link = newNode;
+		newNode->link = 0;
+	}
+  
+  void InsertFirst(ListNode *newNode)
+	{
+		newNode->link = first;
+		first = newNode;
+	}
+	void InsertLast(ListNode *newNode)
+	{
+		ListNode *conti = first;
+		if (first == 0)
+		{
+			first = newNode;
+			return;
+		}
+		while (conti->link != 0)
+		{
+			conti = conti->link;
+		}
+		conti->link = newNode;
+		newNode->link = 0;
+	}
+  
+	void Add(PolyList &othList)
+	{
+		ListNode *WalkedNodeB = othList.first;
+		while (WalkedNodeB != 0)
+		{
+			ListNode *buffer = WalkedNodeB->link;
+			
+			if (!(addElement(WalkedNodeB)))
+			{
+				int socket = findSocket(WalkedNodeB);
+				InsertNewElement(socket, WalkedNodeB);
+			}
+			
+			
+			
+			WalkedNodeB = buffer;
+		}
+	}
+	void PrintList()
+	{
+		ListNode *WalkedNode = first;
+		while (WalkedNode != 0)
+		{
+			cout << WalkedNode->coef << "x^" << WalkedNode->exp << " ";
+			WalkedNode = WalkedNode->link;
+		}
+	}
+};
+
+
+
+int main(int argc, char *argv[])
+{
+	PolyList A, B;
+	int times, input, input2;
+	for (cin >> times, times /= 2; times > 0; times--) { cin >> input >> input2; A.InsertLast(input, input2); }
+	for (cin >> times, times /= 2; times > 0; times--) { cin >> input >> input2; B.InsertLast(input, input2); }
+	A.Add(B);
+	A.PrintList();
+}
