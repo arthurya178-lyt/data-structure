@@ -1,0 +1,79 @@
+#include <iostream>
+using namespace std;
+class MaxHeap
+{
+private:
+	void swap(int &a, int &b)
+	{
+		int buffer = a;
+		a = b;
+		b = buffer;
+	}
+	void reSort()
+	{
+		for (int walk = tail; walk > 0; walk--)
+		{
+			if (walk * 2 > tail)
+				continue;
+			else if (arr[walk] < arr[walk * 2])
+			{
+				swap(arr[walk], arr[walk * 2]);
+			}
+
+			if ((walk * 2) + 1 > tail)
+				continue;
+			else if (arr[walk] < arr[(2 * walk) + 1])
+			{
+				swap(arr[walk], arr[(2 * walk) + 1]);
+			}
+		}
+	}
+	void reverseSort()
+	{
+		for (int walk = 1; walk <=tail; walk++)
+		{
+			int side = 0;
+			if (arr[2 * walk] < arr[2 * walk + 1])
+			{
+				side = 1;
+			}
+
+			if (arr[walk] < arr[walk * 2] && side == 0 && walk*2 <= tail)
+			{
+					swap(arr[walk], arr[walk * 2]);
+			}
+			else if (arr[walk] < arr[walk * 2+1] && side == 1&& walk * 2 + 1 <= tail)
+			{
+				swap(arr[walk], arr[walk * 2+1]);
+			}
+		}
+	}
+public:
+	int arr[100];
+	int tail = 0;
+	void Insert(int x)
+	{
+		arr[++tail] = x;
+		reSort();
+	}
+	void Print()
+	{
+		for (int walk = 1; walk <= tail; walk++)
+			cout << arr[walk] << " ";
+	}
+	int Delete()
+	{
+		int value = arr[1];
+		arr[1] = arr[tail--];
+		reverseSort();
+		return value;
+	}
+};
+int main()
+{
+	MaxHeap tree1;
+	int times, input;
+	for (cin >> times; times > 0; times--) { cin >> input; tree1.Insert(input); }
+	for (cin >> times; times > 0; times--) { tree1.Delete(); }
+	tree1.Print();
+}
