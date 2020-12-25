@@ -1,8 +1,7 @@
-
 #include <iostream>
 using namespace std;
-int **arr,start,spot,amount;
-int *done,locate = -1,findLocate = 0;
+int **arr, start, spot, amount;
+int *done, locate = -1,findLocate = 0;
 bool exist(int target)
 {
 	for (int i = 0; i <= locate; i++)
@@ -12,19 +11,12 @@ bool exist(int target)
 	}
 	return false;
 }
-
 bool othLink(int s)
 {
 	for (int i = 0; i < amount; i++)
 	{
-		if (arr[i][0] == s)
-		{
+		if (arr[i][0] == s || arr[i][1] == s)
 			return true;
-		}
-		else if (arr[i][1] == s)
-		{
-			return true;
-		}
 	}
 	return false;
 }
@@ -40,7 +32,7 @@ int getLink(int s)
 			arr[i][1] = 0;
 			break;
 		}
-		else if(arr[i][1] == s)
+		else if (arr[i][1] == s)
 		{
 			retValue = arr[i][0];
 			arr[i][0] = 0;
@@ -50,42 +42,40 @@ int getLink(int s)
 	}
 	return retValue;
 }
-void BFS(int i)
+void initial(int arr1_dim1,int arr2_dim1)
 {
-	if (locate != spot)
+	arr = new int*[arr1_dim1];
+	for (int i = 0; i < arr1_dim1; i++)
 	{
-		while (othLink(i))
-		{
-			int get = getLink(i);
-			if (!exist(get))
-				done[++locate] = get;
-
-			if (locate == spot)
-				break;
-		}
-		BFS(done[++findLocate]);
+		arr[i] = new int[2]{ 0 };
 	}
+	done = new int[arr2_dim1];
 }
-int main()
+void print()
 {
-	cin >> start >> spot >> amount;
-	arr = new int*[amount];
-	for (int i = 0; i < amount; i++)
-	{
-		arr[i] = new int[2];
-	}
-	for (int i = 0; i < amount; i++)
-	{
-		cin >> arr[i][0] >> arr[i][1];
-	}
-	done = new int[amount];
-	done[++locate] = start;
-	BFS(start);
-	
 	for (int i = 0; i < spot; i++)
 	{
 		cout << done[i] << " ";
 	}
-	
 }
-
+void BFS(int i)
+{
+	while (othLink(i))
+	{
+ 		int get = getLink(i);
+		if (!exist(get))
+			done[++locate] = get;
+	}
+	if(locate != spot-1)
+		BFS(done[++findLocate]);
+}
+int main()
+{
+	cin >> start >> spot >> amount;
+	initial(amount,spot);
+	for (int i = 0; i < amount; i++)
+		cin >> arr[i][0] >> arr[i][1];
+	done[++locate] = start;
+	BFS(start);
+	print();
+}
